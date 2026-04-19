@@ -2,111 +2,222 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>System Faktur | Dexter Vance</title>
+    <title>System Faktur | The North Grip Lumber</title>
     <style>
-        :root { --main: #1a1a1a; --gold: #c5a059; }
-        body { font-family: 'Arial', sans-serif; background: #222; color: #fff; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        
-        /* Panel sterowania */
-        .controls { background: #333; padding: 20px; border-radius: 8px; margin-bottom: 20px; width: 800px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border: 1px solid var(--gold); }
-        input { padding: 10px; border-radius: 4px; border: none; }
-        button { grid-column: span 2; padding: 10px; background: var(--gold); border: none; color: #000; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        button:hover { background: #e2b86a; }
+        :root {
+            --forest-dark: #1b2e1b;
+            --forest-green: #2d5a27;
+            --wood-brown: #5d4037;
+            --paper-beige: #fdfaf6;
+            --accent: #d4a373;
+        }
 
-        /* Arkusz faktury */
-        .invoice-page { background: white; width: 210mm; min-height: 297mm; padding: 60px; color: #000; box-sizing: border-box; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
-        .header { border-bottom: 3px solid var(--main); padding-bottom: 20px; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center; }
-        .header h1 { margin: 0; letter-spacing: 3px; font-weight: 900; }
-        
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-bottom: 50px; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: var(--main); color: white; padding: 15px; text-align: left; }
-        td { padding: 15px; border-bottom: 1px solid #eee; }
-        
-        .total { text-align: right; font-size: 24px; font-weight: bold; margin-top: 30px; border-top: 2px solid var(--main); padding-top: 10px; }
-        
-        .signature { margin-top: 100px; text-align: right; }
-        .sig-line { display: inline-block; border-top: 1px solid #000; width: 250px; text-align: center; padding-top: 5px; font-size: 12px; }
-        .vance-handwriting { font-family: 'Cursive', sans-serif; font-style: italic; font-size: 28px; margin-bottom: -5px; color: #002b5c; }
+        body {
+            font-family: 'Segoe UI', Helvetica, Arial, sans-serif;
+            background-color: #2c3e50;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-        @media print { .controls { display: none; } body { background: none; padding: 0; } .invoice-page { box-shadow: none; border: none; } }
+        /* PANEL STEROWANIA */
+        .no-print {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 900px;
+            border-left: 8px solid var(--forest-green);
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        input, select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .btn-add { background: var(--forest-green); color: white; }
+        .btn-print { background: var(--wood-brown); color: white; width: 100%; margin-top: 10px; }
+        .btn:hover { opacity: 0.8; transform: translateY(-2px); }
+
+        /* ARKUSZ FAKTURY */
+        .invoice-paper {
+            background: var(--paper-beige);
+            width: 210mm;
+            min-height: 297mm;
+            padding: 25mm;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            box-sizing: border-box;
+            position: relative;
+            border: 1px solid #dcdcdc;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 4px solid var(--forest-dark);
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+
+        .logo h1 {
+            color: var(--forest-dark);
+            margin: 0;
+            font-size: 32px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .logo p { margin: 5px 0; color: var(--forest-green); font-weight: bold; }
+
+        .invoice-info { text-align: right; }
+        .invoice-info h2 { margin: 0; color: var(--wood-brown); }
+
+        .client-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            margin-bottom: 40px;
+        }
+
+        .info-box h4 {
+            border-bottom: 2px solid var(--accent);
+            margin-bottom: 10px;
+            color: var(--forest-dark);
+            padding-bottom: 5px;
+        }
+
+        /* TABELA POZYCJI */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        th {
+            background: var(--forest-dark);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .total-box {
+            float: right;
+            width: 300px;
+            background: #f1f1f1;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* PODPIS (Twoja Parafka) */
+        .signature-section {
+            margin-top: 120px;
+            clear: both;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .signature-wrap {
+            text-align: center;
+            width: 280px;
+        }
+
+        .vance-signature {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 42px;
+            color: #0b1a30;
+            margin-bottom: -15px;
+            transform: rotate(-3deg);
+            /* Styl Twojej pierwszej parafki */
+            border-bottom: 2px solid #000;
+            display: inline-block;
+            padding: 0 20px;
+        }
+
+        .sig-text {
+            font-size: 11px;
+            text-transform: uppercase;
+            margin-top: 10px;
+            color: #555;
+        }
+
+        @media print {
+            .no-print { display: none; }
+            body { background: white; padding: 0; }
+            .invoice-paper { box-shadow: none; border: none; width: 100%; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="controls">
-        <input type="text" id="in_client" placeholder="Imię i Nazwisko klienta" oninput="sync()">
-        <input type="text" id="in_id" placeholder="Numer faktury (np. 01/2026)" oninput="sync()">
-        <input type="text" id="in_desc" placeholder="Opis usługi" oninput="sync()">
-        <input type="number" id="in_price" placeholder="Kwota ($)" oninput="sync()">
-        <button onclick="window.print()">Zapisz jako PDF / PDF do Discorda</button>
+<div class="no-print">
+    <h3 style="margin-top:0; color: var(--forest-green);">🌲 Panel Zarządzania The North Grip Lumber</h3>
+    
+    <div class="controls-grid">
+        <input type="text" id="client_name" placeholder="Dane Klienta">
+        <input type="text" id="inv_number" placeholder="Numer faktury (np. TNGL/2026/01)">
+        <input type="date" id="inv_date">
     </div>
 
-    <div class="invoice-page">
-        <div class="header">
-            <div>
-                <h1>VANCE</h1>
-                <p style="margin:0; color: #666;">ENTERPRISES & CO.</p>
-            </div>
-            <div style="text-align: right">
-                <h3 style="margin:0">FAKTURA</h3>
-                <p id="out_id" style="margin:0">#---</p>
-                <p id="out_date" style="font-size: 12px;"></p>
-            </div>
-        </div>
-
-        <div class="grid">
-            <div>
-                <strong>WYSTAWCA:</strong><br>
-                Dexter Vance<br>
-                Vance Enterprises<br>
-                Los Santos, SA
-            </div>
-            <div>
-                <strong>KLIENT:</strong><br>
-                <span id="out_client">_________________</span>
-            </div>
-        </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>OPIS USŁUGI / TOWARU</th>
-                    <th style="text-align: right">KWOTA</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td id="out_desc">Brak opisu</td>
-                    <td style="text-align: right" id="out_price">0 $</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="total">
-            RAZEM: <span id="out_total">0 $</span>
-        </div>
-
-        <div class="signature">
-            <div class="vance-handwriting">D. Vance</div>
-            <div class="sig-line">Pieczęć i podpis wystawcy</div>
-        </div>
+    <hr>
+    
+    <div class="controls-grid" style="grid-template-columns: 2fr 1fr 1fr 1fr auto;">
+        <input type="text" id="item_name" placeholder="Nazwa towaru/usługi">
+        <input type="text" id="item_unit" placeholder="Jedn. (np. m3, szt.)">
+        <input type="number" id="item_qty" placeholder="Ilość">
+        <input type="number" id="item_price" placeholder="Cena jedn. $">
+        <button class="btn btn-add" onclick="addItem()">+ Dodaj</button>
     </div>
 
-    <script>
-        // Automatyczna data
-        document.getElementById('out_date').innerText = "Data wystawienia: " + new Date().toLocaleDateString();
+    <button class="btn btn-print" onclick="window.print()">Wystaw Fakturę (PDF)</button>
+</div>
 
-        // Funkcja odświeżająca na żywo
-        function sync() {
-            document.getElementById('out_client').innerText = document.getElementById('in_client').value || "_________________";
-            document.getElementById('out_id').innerText = "#" + (document.getElementById('in_id').value || "---");
-            document.getElementById('out_desc').innerText = document.getElementById('in_desc').value || "Brak opisu";
-            
-            const cena = document.getElementById('in_price').value || "0";
-            document.getElementById('out_price').innerText = cena + " $";
-            document.getElementById('out_total').innerText = cena + " $";
-        }
-    </script>
-</body>
-</html>
+<div class="invoice-paper">
+    <div class="header">
+        <div class="logo">
+            <h1>The North Grip Lumber</h1>
+            <p>Premium Wood & Forestry Services</p>
+        </div>
+        <div class="invoice-info">
+            <h2>FAKTURA</h2>
+            <p id="out_inv_num">Numer: [WPISZ NR]</p>
+            <p id="out_inv_date">Data: [WYBIERZ DATĘ]</p>
+        </div>
