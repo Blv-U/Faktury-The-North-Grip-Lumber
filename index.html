@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>System Faktur | Dexter Vance</title>
+    <style>
+        :root { --main: #1a1a1a; --gold: #c5a059; }
+        body { font-family: 'Arial', sans-serif; background: #222; color: #fff; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        
+        /* Panel sterowania */
+        .controls { background: #333; padding: 20px; border-radius: 8px; margin-bottom: 20px; width: 800px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border: 1px solid var(--gold); }
+        input { padding: 10px; border-radius: 4px; border: none; }
+        button { grid-column: span 2; padding: 10px; background: var(--gold); border: none; color: #000; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        button:hover { background: #e2b86a; }
+
+        /* Arkusz faktury */
+        .invoice-page { background: white; width: 210mm; min-height: 297mm; padding: 60px; color: #000; box-sizing: border-box; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        .header { border-bottom: 3px solid var(--main); padding-bottom: 20px; margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { margin: 0; letter-spacing: 3px; font-weight: 900; }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-bottom: 50px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: var(--main); color: white; padding: 15px; text-align: left; }
+        td { padding: 15px; border-bottom: 1px solid #eee; }
+        
+        .total { text-align: right; font-size: 24px; font-weight: bold; margin-top: 30px; border-top: 2px solid var(--main); padding-top: 10px; }
+        
+        .signature { margin-top: 100px; text-align: right; }
+        .sig-line { display: inline-block; border-top: 1px solid #000; width: 250px; text-align: center; padding-top: 5px; font-size: 12px; }
+        .vance-handwriting { font-family: 'Cursive', sans-serif; font-style: italic; font-size: 28px; margin-bottom: -5px; color: #002b5c; }
+
+        @media print { .controls { display: none; } body { background: none; padding: 0; } .invoice-page { box-shadow: none; border: none; } }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <input type="text" id="in_client" placeholder="Imię i Nazwisko klienta" oninput="sync()">
+        <input type="text" id="in_id" placeholder="Numer faktury (np. 01/2026)" oninput="sync()">
+        <input type="text" id="in_desc" placeholder="Opis usługi" oninput="sync()">
+        <input type="number" id="in_price" placeholder="Kwota ($)" oninput="sync()">
+        <button onclick="window.print()">Zapisz jako PDF / PDF do Discorda</button>
+    </div>
+
+    <div class="invoice-page">
+        <div class="header">
+            <div>
+                <h1>VANCE</h1>
+                <p style="margin:0; color: #666;">ENTERPRISES & CO.</p>
+            </div>
+            <div style="text-align: right">
+                <h3 style="margin:0">FAKTURA</h3>
+                <p id="out_id" style="margin:0">#---</p>
+                <p id="out_date" style="font-size: 12px;"></p>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div>
+                <strong>WYSTAWCA:</strong><br>
+                Dexter Vance<br>
+                Vance Enterprises<br>
+                Los Santos, SA
+            </div>
+            <div>
+                <strong>KLIENT:</strong><br>
+                <span id="out_client">_________________</span>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>OPIS USŁUGI / TOWARU</th>
+                    <th style="text-align: right">KWOTA</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="out_desc">Brak opisu</td>
+                    <td style="text-align: right" id="out_price">0 $</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="total">
+            RAZEM: <span id="out_total">0 $</span>
+        </div>
+
+        <div class="signature">
+            <div class="vance-handwriting">D. Vance</div>
+            <div class="sig-line">Pieczęć i podpis wystawcy</div>
+        </div>
+    </div>
+
+    <script>
+        // Automatyczna data
+        document.getElementById('out_date').innerText = "Data wystawienia: " + new Date().toLocaleDateString();
+
+        // Funkcja odświeżająca na żywo
+        function sync() {
+            document.getElementById('out_client').innerText = document.getElementById('in_client').value || "_________________";
+            document.getElementById('out_id').innerText = "#" + (document.getElementById('in_id').value || "---");
+            document.getElementById('out_desc').innerText = document.getElementById('in_desc').value || "Brak opisu";
+            
+            const cena = document.getElementById('in_price').value || "0";
+            document.getElementById('out_price').innerText = cena + " $";
+            document.getElementById('out_total').innerText = cena + " $";
+        }
+    </script>
+</body>
+</html>
